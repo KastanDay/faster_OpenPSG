@@ -4,7 +4,7 @@ import shutil
 from typing import List
 
 import sys
-sys.path.append("/home/kastan/thesis/video-pretrained-transformer/data_preprocessing/scene_graph/OpenPSG/")
+sys.path.append("/home/kastan/thesis/video-pretrained-transformer/data_preprocessing/scene_graph/faster_OpenPSG/")
 from cog import BasePredictor, Path, Input, BaseModel
 
 from openpsg.utils.utils import show_result
