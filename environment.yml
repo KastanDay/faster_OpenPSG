@@ -1,4 +1,4 @@
-name: openpsg
+name: openpsg_custom
 channels:
   - pytorch
   - conda-forge

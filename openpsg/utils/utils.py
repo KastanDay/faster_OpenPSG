@@ -325,6 +325,7 @@ def show_result(img,
     rel_pair_idxes_topk = result.rel_pair_idxes[rel_topk_idx]
     relations = np.concatenate(
         [rel_pair_idxes_topk, rel_labels_topk[..., None]], axis=1)
+   
     n_rels = len(relations)
     
     top_padding = 20
@@ -343,7 +344,8 @@ def show_result(img,
     # # Adjust colormaps
     # colormap_coco = [adjust_text_color(c, viz) for c in colormap_coco]
     viz_graph = VisImage(np.full((height, width, 3), 255))
-    
+    ## New tuple list variable added
+    sro_tuple_list = []
     for i, r in enumerate(relations):
         s_idx, o_idx, rel_id = r
         s_label = rel_obj_labels[s_idx]
@@ -356,7 +358,7 @@ def show_result(img,
             assigned_colors=[colormap_coco[s_idx], colormap_coco[o_idx]],
         )
         viz_masked_img = viz.get_output().get_image()
-
+        sro_tuple_list.append((s_label,rel_label,o_label))
         viz_graph = VisImage(np.full((40, width, 3), 255))
         curr_x = 2
         curr_y = 2
@@ -405,8 +407,10 @@ def show_result(img,
     # if out_file is not None:
     #     mmcv.imwrite(output_viz_graph, out_file)
 
-    if not (show or out_file):
+    if (show or out_file):
         return viz_final
+    else:
+        return sro_tuple_list
 
 
 # def multiclass_nms_alt(
