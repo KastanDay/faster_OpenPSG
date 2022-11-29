@@ -250,6 +250,36 @@ PREDICATES = [
     'leaning on',
 ]
 
+def kastan_get_SRO_list(result, 
+                        num_rel=20):
+    #For psgtr
+    rel_obj_labels = result.labels
+    rel_obj_labels = [CLASSES[l - 1] for l in rel_obj_labels]
+    
+    # Filter out relations
+    n_rel_topk = num_rel
+    # Exclude background class
+    rel_dists = result.rel_dists[:, 1:]
+    rel_scores = rel_dists.max(1)
+    # Extract relations with top scores
+    rel_topk_idx = np.argpartition(rel_scores, -n_rel_topk)[-n_rel_topk:]
+    rel_labels_topk = rel_dists[rel_topk_idx].argmax(1)
+    rel_pair_idxes_topk = result.rel_pair_idxes[rel_topk_idx]
+    relations = np.concatenate(
+        [rel_pair_idxes_topk, rel_labels_topk[..., None]], axis=1)
+   
+    sro_tuple_list = []
+    for i, r in enumerate(relations):
+        s_idx, o_idx, rel_id = r
+        s_label = rel_obj_labels[s_idx]
+        o_label = rel_obj_labels[o_idx]
+        rel_label = PREDICATES[rel_id]
+        sro_tuple_list.append((s_label,rel_label,o_label))
+        
+    return sro_tuple_list
+    
+    
+    
 
 def show_result(img,
                 result,

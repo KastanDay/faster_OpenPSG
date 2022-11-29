@@ -7,7 +7,7 @@ import sys
 sys.path.append("/home/kastan/thesis/video-pretrained-transformer/data_preprocessing/scene_graph/faster_OpenPSG/")
 from cog import BasePredictor, Path, Input, BaseModel
 
-from openpsg.utils.utils import show_result
+from openpsg.utils.utils import show_result, kastan_get_SRO_list
 from mmdet.apis import init_detector, inference_detector
 from mmcv import Config
 import mmcv
@@ -54,8 +54,8 @@ def get_scene_graph_list(tuple_list):
 class Predictor(BasePredictor):
     def __init__(self):
         # model_ckt = "epoch_60.pth"
-        model_ckt = "checkpoints/epoch_60.pth"
-        cfg = Config.fromfile("configs/psgtr/psgtr_r50_psg_inference.py")
+        model_ckt = "faster_OpenPSG/checkpoints/epoch_60.pth"
+        cfg = Config.fromfile("faster_OpenPSG/configs/psgtr/psgtr_r50_psg_inference.py")
         self.model = init_detector(cfg, model_ckt, device="cuda")
 
     def predict(
@@ -79,18 +79,22 @@ class Predictor(BasePredictor):
         # out_path = "data/simple_test_data/ouput.png"
         # out_dir = "data/simple_test_data/"
 
-        sro_tuple_list = show_result(
-            # str(image), # 
-            image,
+        # sro_tuple_list = show_result(
+        #     # str(image), # 
+        #     image,
+        #     result,
+        #     is_one_stage=True,
+        #     num_rel=num_rel,
+        #     # out_dir=out_dir,
+        #     # out_file=str(out_path),
+        # )
+        sro_tuple_list = kastan_get_SRO_list(
             result,
-            is_one_stage=True,
             num_rel=num_rel,
-            # out_dir=out_dir,
-            # out_file=str(out_path),
         )
         scg_list = get_scene_graph_list(sro_tuple_list)
 
-        return scg_list  ## returning the list of strings for the scene graphs
+        return scg_list, result  ## returning the list of strings for the scene graphs
 
 
 def print_debugging():
