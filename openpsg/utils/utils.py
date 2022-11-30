@@ -257,12 +257,18 @@ def kastan_get_SRO_list(result,
     rel_obj_labels = [CLASSES[l - 1] for l in rel_obj_labels]
     
     # Filter out relations
-    n_rel_topk = num_rel
     # Exclude background class
     rel_dists = result.rel_dists[:, 1:]
     rel_scores = rel_dists.max(1)
+    
+    # kastan debugging 
+    # hopefully working now... error here... ValueError: kth(=-1) out of bounds (4)
+    # error when requesting more relations than exist
+    n_rel_topk = min(num_rel, len(rel_scores))
+    # print("n_rel_topk", n_rel_topk)
+    
     # Extract relations with top scores
-    rel_topk_idx = np.argpartition(rel_scores, -n_rel_topk)[-n_rel_topk:]
+    rel_topk_idx = np.argpartition(rel_scores, -n_rel_topk)[-n_rel_topk:] 
     rel_labels_topk = rel_dists[rel_topk_idx].argmax(1)
     rel_pair_idxes_topk = result.rel_pair_idxes[rel_topk_idx]
     relations = np.concatenate(

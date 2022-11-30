@@ -94,7 +94,7 @@ class Predictor(BasePredictor):
         )
         scg_list = get_scene_graph_list(sro_tuple_list)
 
-        return scg_list, result  ## returning the list of strings for the scene graphs
+        return scg_list  ## returning the list of strings for the scene graphs
 
 
 def print_debugging():
